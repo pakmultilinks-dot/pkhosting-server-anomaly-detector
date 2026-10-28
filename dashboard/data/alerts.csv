@@ -1,0 +1,16 @@
+metric,rule,severity,start,end,duration_min,peak,detail
+net_mbps,bandwidth_surge,warning,2026-10-02T14:00:00,2026-10-02T14:14:00,15,571.42,Bandwidth at or above 3x the trailing 60-minute median for 5 minutes or more
+cpu_pct,sustained_high_cpu,critical,2026-10-04T11:00:00,2026-10-04T11:44:00,45,97.0,CPU at or above 90% for 10 minutes or more
+net_mbps,traffic_dropout,critical,2026-10-05T03:00:00,2026-10-05T03:11:00,12,0.0,Bandwidth at zero for 3 minutes or more (possible outage)
+cpu_pct,cpu_spike,warning,2026-10-06T19:00:00,2026-10-06T19:01:00,2,99.0,CPU at or above 98%
+net_mbps,bandwidth_surge,warning,2026-10-07T21:00:00,2026-10-07T21:19:00,20,611.47,Bandwidth at or above 3x the trailing 60-minute median for 5 minutes or more
+cpu_pct,sustained_high_cpu,critical,2026-10-08T13:00:00,2026-10-08T13:29:00,30,96.0,CPU at or above 90% for 10 minutes or more
+net_mbps,traffic_dropout,critical,2026-10-10T04:00:00,2026-10-10T04:07:00,8,0.0,Bandwidth at zero for 3 minutes or more (possible outage)
+net_mbps,bandwidth_surge,warning,2026-10-10T18:00:00,2026-10-10T18:11:00,12,563.01,Bandwidth at or above 3x the trailing 60-minute median for 5 minutes or more
+cpu_pct,sustained_high_cpu,critical,2026-10-11T02:00:00,2026-10-11T02:39:00,40,95.0,CPU at or above 90% for 10 minutes or more
+net_mbps,bandwidth_surge,warning,2026-10-12T12:00:00,2026-10-12T12:09:00,10,398.87,Bandwidth at or above 3x the trailing 60-minute median for 5 minutes or more
+net_mbps,traffic_dropout,critical,2026-10-13T02:00:00,2026-10-13T02:19:00,20,0.0,Bandwidth at zero for 3 minutes or more (possible outage)
+cpu_pct,sustained_high_cpu,critical,2026-10-13T10:00:00,2026-10-13T10:59:00,60,98.0,CPU at or above 90% for 10 minutes or more
+cpu_pct,cpu_spike,warning,2026-10-13T10:00:00,2026-10-13T10:59:00,60,98.0,CPU at or above 98%
+cpu_pct,cpu_spike,warning,2026-10-14T17:00:00,2026-10-14T17:01:00,2,99.0,CPU at or above 98%
+net_mbps,bandwidth_surge,warning,2026-10-14T20:00:00,2026-10-14T20:24:00,25,701.01,Bandwidth at or above 3x the trailing 60-minute median for 5 minutes or more

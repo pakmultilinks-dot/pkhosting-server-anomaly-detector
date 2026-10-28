@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PK Hosting Server Anomaly Detector</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+body { font-family: system-ui, Arial, sans-serif; margin: 0 auto; max-width: 1100px; padding: 20px; color: #1a1a1a; }
+h1 { font-size: 26px; } h2 { margin-top: 34px; }
+.banner { padding: 14px; border-radius: 8px; font-weight: bold; background: #e8f5e9; }
+.banner.CRITICAL { background: #fdecea; } .banner.WARNING { background: #fff4e0; }
+.cards { display: flex; gap: 12px; flex-wrap: wrap; }
+.card { border: 1px solid #ddd; border-radius: 8px; padding: 12px 18px; min-width: 140px; }
+.card b { font-size: 26px; display: block; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
+th { background: #f2f2f2; }
+canvas { width: 100%; height: 260px; }
+.note { color: #555; font-size: 14px; }
+</style></head><body>
+<h1>PK Hosting Server Anomaly Detector</h1>
+<p class="note">14 days of per-minute server metrics (CPU %, memory %, bandwidth Mbps) with labelled injected
+anomalies. Detectors: rolling z-score, rolling median-MAD, Isolation Forest, plus rule-based alerts.
+Status below reflects the final hour of the dataset.</p>
+<div class="banner OK">Status in the final hour: OK</div>
+<div class="cards">
+<div class="card"><b>24</b> injected events</div>
+<div class="card"><b>24</b> events detected (union)</div>
+<div class="card"><b>0</b> events missed</div>
+<div class="card"><b>20</b> false alarm events</div>
+<div class="card"><b>15</b> rule alerts</div>
+<div class="card"><b>7</b> critical alerts</div>
+</div>
+<h2>CPU usage (%)</h2><canvas id="c_cpu"></canvas>
+<h2>Memory usage (%)</h2><canvas id="c_mem"></canvas>
+<h2>Bandwidth (Mbps)</h2><canvas id="c_net"></canvas>
+<p class="note">Red dots are minutes flagged by any detector (union method). Full data:
+<a href="data/metrics.csv">metrics.csv</a>, <a href="data/events.csv">events.csv</a>,
+<a href="data/alerts.csv">alerts.csv</a>, <a href="data/evaluation.json">evaluation.json</a>.</p>
+<h2>Alerts (rule-based)</h2>
+<table><tr><th>Severity</th><th>Metric</th><th>Rule</th><th>Start</th><th>End</th><th>Minutes</th><th>Peak</th><th>Detail</th></tr>
+<tr><td>warning</td><td>net_mbps</td><td>bandwidth_surge</td><td>2026-10-02T14:00:00</td><td>2026-10-02T14:14:00</td><td>15</td><td>571.42</td><td>Bandwidth at or above 3x the trailing 60-minute median for 5 minutes or more</td></tr><tr><td>critical</td><td>cpu_pct</td><td>sustained_high_cpu</td><td>2026-10-04T11:00:00</td><td>2026-10-04T11:44:00</td><td>45</td><td>97.0</td><td>CPU at or above 90% for 10 minutes or more</td></tr><tr><td>critical</td><td>net_mbps</td><td>traffic_dropout</td><td>2026-10-05T03:00:00</td><td>2026-10-05T03:11:00</td><td>12</td><td>0.0</td><td>Bandwidth at zero for 3 minutes or more (possible outage)</td></tr><tr><td>warning</td><td>cpu_pct</td><td>cpu_spike</td><td>2026-10-06T19:00:00</td><td>2026-10-06T19:01:00</td><td>2</td><td>99.0</td><td>CPU at or above 98%</td></tr><tr><td>warning</td><td>net_mbps</td><td>bandwidth_surge</td><td>2026-10-07T21:00:00</td><td>2026-10-07T21:19:00</td><td>20</td><td>611.47</td><td>Bandwidth at or above 3x the trailing 60-minute median for 5 minutes or more</td></tr><tr><td>critical</td><td>cpu_pct</td><td>sustained_high_cpu</td><td>2026-10-08T13:00:00</td><td>2026-10-08T13:29:00</td><td>30</td><td>96.0</td><td>CPU at or above 90% for 10 minutes or more</td></tr><tr><td>critical</td><td>net_mbps</td><td>traffic_dropout</td><td>2026-10-10T04:00:00</td><td>2026-10-10T04:07:00</td><td>8</td><td>0.0</td><td>Bandwidth at zero for 3 minutes or more (possible outage)</td></tr><tr><td>warning</td><td>net_mbps</td><td>bandwidth_surge</td><td>2026-10-10T18:00:00</td><td>2026-10-10T18:11:00</td><td>12</td><td>563.01</td><td>Bandwidth at or above 3x the trailing 60-minute median for 5 minutes or more</td></tr><tr><td>critical</td><td>cpu_pct</td><td>sustained_high_cpu</td><td>2026-10-11T02:00:00</td><td>2026-10-11T02:39:00</td><td>40</td><td>95.0</td><td>CPU at or above 90% for 10 minutes or more</td></tr><tr><td>warning</td><td>net_mbps</td><td>bandwidth_surge</td><td>2026-10-12T12:00:00</td><td>2026-10-12T12:09:00</td><td>10</td><td>398.87</td><td>Bandwidth at or above 3x the trailing 60-minute median for 5 minutes or more</td></tr><tr><td>critical</td><td>net_mbps</td><td>traffic_dropout</td><td>2026-10-13T02:00:00</td><td>2026-10-13T02:19:00</td><td>20</td><td>0.0</td><td>Bandwidth at zero for 3 minutes or more (possible outage)</td></tr><tr><td>critical</td><td>cpu_pct</td><td>sustained_high_cpu</td><td>2026-10-13T10:00:00</td><td>2026-10-13T10:59:00</td><td>60</td><td>98.0</td><td>CPU at or above 90% for 10 minutes or more</td></tr><tr><td>warning</td><td>cpu_pct</td><td>cpu_spike</td><td>2026-10-13T10:00:00</td><td>2026-10-13T10:59:00</td><td>60</td><td>98.0</td><td>CPU at or above 98%</td></tr><tr><td>warning</td><td>cpu_pct</td><td>cpu_spike</td><td>2026-10-14T17:00:00</td><td>2026-10-14T17:01:00</td><td>2</td><td>99.0</td><td>CPU at or above 98%</td></tr><tr><td>warning</td><td>net_mbps</td><td>bandwidth_surge</td><td>2026-10-14T20:00:00</td><td>2026-10-14T20:24:00</td><td>25</td><td>701.01</td><td>Bandwidth at or above 3x the trailing 60-minute median for 5 minutes or more</td></tr></table>
+<h2>Injected events and which method caught them</h2>
+<table><tr><th>ID</th><th>Metric</th><th>Kind</th><th>Start</th><th>Minutes</th><th>Peak</th><th>z-score</th><th>MAD</th><th>Isolation Forest</th></tr>
+<tr><td>E01</td><td>cpu_pct</td><td>spike</td><td>2026-10-01T10:00:00</td><td>3</td><td>88.31</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E02</td><td>net_mbps</td><td>surge</td><td>2026-10-02T14:00:00</td><td>15</td><td>571.42</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E03</td><td>mem_pct</td><td>leak</td><td>2026-10-03T02:00:00</td><td>360</td><td>80.48</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E04</td><td>cpu_pct</td><td>saturation</td><td>2026-10-04T11:00:00</td><td>45</td><td>97.0</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E05</td><td>net_mbps</td><td>dropout</td><td>2026-10-05T03:00:00</td><td>12</td><td>0.0</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E06</td><td>cpu_pct</td><td>spike</td><td>2026-10-06T19:00:00</td><td>2</td><td>99.0</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E07</td><td>mem_pct</td><td>shift</td><td>2026-10-07T09:00:00</td><td>120</td><td>88.0</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E08</td><td>net_mbps</td><td>surge</td><td>2026-10-07T21:00:00</td><td>20</td><td>611.47</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E09</td><td>cpu_pct</td><td>saturation</td><td>2026-10-08T13:00:00</td><td>30</td><td>96.0</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E10</td><td>cpu_pct</td><td>spike</td><td>2026-10-09T08:00:00</td><td>4</td><td>86.24</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E11</td><td>mem_pct</td><td>leak</td><td>2026-10-09T20:00:00</td><td>300</td><td>76.82</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E12</td><td>net_mbps</td><td>dropout</td><td>2026-10-10T04:00:00</td><td>8</td><td>0.0</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E13</td><td>cpu_pct</td><td>shift</td><td>2026-10-11T15:00:00</td><td>90</td><td>82.0</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E14</td><td>net_mbps</td><td>surge</td><td>2026-10-12T12:00:00</td><td>10</td><td>398.87</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E15</td><td>mem_pct</td><td>spike</td><td>2026-10-12T23:00:00</td><td>3</td><td>93.72</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E16</td><td>cpu_pct</td><td>saturation</td><td>2026-10-13T10:00:00</td><td>60</td><td>98.0</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E17</td><td>net_mbps</td><td>dropout</td><td>2026-10-13T02:00:00</td><td>20</td><td>0.0</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E18</td><td>cpu_pct</td><td>spike</td><td>2026-10-14T17:00:00</td><td>2</td><td>99.0</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E19</td><td>mem_pct</td><td>shift</td><td>2026-10-14T06:00:00</td><td>150</td><td>85.0</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E20</td><td>net_mbps</td><td>surge</td><td>2026-10-14T20:00:00</td><td>25</td><td>701.01</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E21</td><td>cpu_pct</td><td>shift</td><td>2026-10-02T22:00:00</td><td>60</td><td>78.0</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E22</td><td>mem_pct</td><td>spike</td><td>2026-10-05T16:00:00</td><td>2</td><td>97.56</td><td>YES</td><td>YES</td><td>no</td></tr><tr><td>E23</td><td>net_mbps</td><td>surge</td><td>2026-10-10T18:00:00</td><td>12</td><td>563.01</td><td>YES</td><td>YES</td><td>YES</td></tr><tr><td>E24</td><td>cpu_pct</td><td>saturation</td><td>2026-10-11T02:00:00</td><td>40</td><td>95.0</td><td>YES</td><td>YES</td><td>YES</td></tr></table>
+<h2>Evaluation (ground truth = injected events)</h2>
+<table><tr><th>Method</th><th>Point precision</th><th>Point recall</th><th>Point F1</th><th>Point FPR</th><th>Event precision</th><th>Event recall</th><th>Event F1</th><th>Median delay (min)</th><th>Flagged minutes</th><th>False alarm events</th></tr>
+<tr><td>zscore</td><td>0.6364</td><td>0.0553</td><td>0.1017</td><td>0.0023</td><td>0.5854</td><td>1.0</td><td>0.7385</td><td>0</td><td>121</td><td>17</td></tr><tr><td>mad</td><td>0.5494</td><td>0.2197</td><td>0.3138</td><td>0.0134</td><td>0.6857</td><td>1.0</td><td>0.8136</td><td>0</td><td>557</td><td>11</td></tr><tr><td>iforest</td><td>0.995</td><td>0.2886</td><td>0.4474</td><td>0.0001</td><td>0.9231</td><td>0.5</td><td>0.6486</td><td>11</td><td>404</td><td>1</td></tr><tr><td>union</td><td>0.7005</td><td>0.4365</td><td>0.5378</td><td>0.0139</td><td>0.5455</td><td>1.0</td><td>0.7059</td><td>0</td><td>868</td><td>20</td></tr></table>
+<h2>How this works</h2>
+<p>Simulated data is the primary dataset because PK Hosting production servers are not accessible to this
+project (no dashboard login, SSH or API access was ever connected). The generator builds realistic diurnal and
+weekly patterns with noise, then injects labelled anomalies (spikes, level shifts, saturation, leaks, bandwidth
+surges, dropouts). Every detector uses only past data, so a flag never uses information from after its minute.
+Event-level scoring counts an event as detected if any flag falls within the event window plus or minus 5 minutes.
+To run on a real server, use <code>src/collect_real.py</code> (reads /proc and /sys, standard library only) and
+feed its CSV through the same detectors. Full method notes are in the project README.</p>
+<script>
+fetch('data/series.json').then(r => r.json()).then(d => {
+  const labels = d.timestamps.map(t => t.slice(5, 16));
+  function chart(id, values, anom, unit) {
+    const pts = d.anomaly_idx.map((idx, k) => ({ x: idx, y: anom[k] }));
+    new Chart(document.getElementById(id), { type: 'line',
+      data: { labels: labels, datasets: [
+        { label: unit, data: values, borderColor: '#2563eb', borderWidth: 1, pointRadius: 0 },
+        { label: 'flagged', data: pts, type: 'scatter', backgroundColor: '#dc2626', pointRadius: 3, showLine: false }
+      ]},
+      options: { responsive: true, animation: false, parsing: false,
+        plugins: { decimation: { enabled: true, algorithm: 'min-max' } },
+        scales: { x: { ticks: { maxTicksLimit: 14 } } } }
+    });
+  }
+  chart('c_cpu', d.cpu, d.anomaly_cpu, 'CPU %');
+  chart('c_mem', d.mem, d.anomaly_mem, 'Memory %');
+  chart('c_net', d.net, d.anomaly_net, 'Mbps');
+});
+</script></body></html>
